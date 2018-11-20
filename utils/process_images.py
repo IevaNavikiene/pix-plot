@@ -129,7 +129,7 @@ class PixPlot:
       out_paths = []
       for i in sorted(self.sizes, key=int, reverse=True):
         out_dir = join(self.output_dir, 'thumbs', str(i) + 'px')
-        out_path = join( out_dir, get_filename(j) + '.jpg' )
+        out_path = join( out_dir, get_filename(j) + '.jpg')
         if os.path.exists(out_path) and not self.rewrite_image_thumbs:
           continue
         sizes.append(i)
@@ -230,12 +230,18 @@ class PixPlot:
     Build a 2d projection of the `image_vectors`
     '''
     print(' * building 2D projection')
-    if self.method == 'tsne':
+    if self.method == 'tsne':  # t-Distributed Stochastic Neighbor Embedding (t-SNE)
       model = TSNE(n_components=2, random_state=0)
       np.set_printoptions(suppress=True)
       return model.fit_transform( np.array(image_vectors) )
 
     elif self.method == 'umap':
+      """
+      Uniform Manifold Approximation and Projection (UMAP) is a dimension reduction
+      technique that can be used for visualisation similarly to t-SNE, but also for
+      general non-linear dimension reduction. The algorithm is founded on three 
+      assumptions about the data
+      """
       model = UMAP(n_neighbors=25, min_dist=0.00001, metric='correlation')
       return model.fit_transform( np.array(image_vectors) )
 
@@ -250,7 +256,7 @@ class PixPlot:
       img = get_filename(self.vector_files[c])
       if img in self.errored_images:
         continue
-      thumb_path = join(self.output_dir, 'thumbs', '32px', img)
+      thumb_path = join(self.output_dir, 'thumbs', '32px', get_filename(img) + '.jpg')
       with Image.open(thumb_path) as image:
         width, height = image.size
       # Add the image name, x offset, y offset

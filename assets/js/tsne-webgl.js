@@ -184,8 +184,18 @@ function loadData() {
 **/
 
 function setImageData(json) {
+  max_distance_x = 0;
+  max_distance_y = 0;
   json.forEach(function(img, idx) {
-    var img = parseImage(img);
+      if(img[1] > max_distance_x){
+          max_distance_x = img[1];
+      }
+      if(img[2] > max_distance_y){
+          max_distance_y = img[2];
+      }
+  });
+  json.forEach(function(img, idx) {
+    var img = parseImage(img, max_distance_x, max_distance_y);
     // Store a sorted list of the imageData keys
     imageDataKeys.push(img.name);
     // Update the global data store with this image's data
@@ -208,11 +218,11 @@ function setImageData(json) {
 *   of an image expressed within `imageData`
 **/
 
-function parseImage(img) {
+function parseImage(img, max_distance_x, max_distance_y) {
   return {
     name: img[0],
-    x: img[1],
-    y: img[2],
+    x: (1000*img[1])/max_distance_x,
+    y: (500*img[2])/max_distance_y,
     width: img[3],
     height: img[4],
     xOffset: (sizes.image.width - img[3])/2,
